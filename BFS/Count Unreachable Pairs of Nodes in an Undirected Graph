@@ -1,0 +1,39 @@
+class Solution {
+    public void dfs(int i, List<List<Integer>> adjList, boolean visited[], long[] count){
+        visited[i] = true;
+        count[0] = count[0]+1;
+
+        for(int nbr : adjList.get(i)){
+            if(!visited[nbr]){
+                dfs(nbr,adjList,visited,count);
+            }
+        }
+    }
+    public long countPairs(int n, int[][] edges) {
+        List<List<Integer>> adjList = new ArrayList<>();
+        for(int i=0;i<n;i++){
+            adjList.add(new ArrayList<>());
+        }
+        for(int arr[] : edges){
+            int first = arr[0];
+            int second = arr[1];
+
+            adjList.get(first).add(second);
+            adjList.get(second).add(first);
+        }
+
+        boolean visited[] = new boolean[n];
+        long result = 0;
+        long remainingNodes = n;
+        for(int i=0;i<n;i++){
+            if(!visited[i]){
+                long count[] = new long[1];
+                dfs(i,adjList,visited,count);
+                result += count[0]*(remainingNodes-count[0]);
+                remainingNodes -= count[0];
+            }
+        }
+
+        return result;
+    }
+}
