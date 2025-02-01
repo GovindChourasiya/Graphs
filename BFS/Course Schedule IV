@@ -1,0 +1,35 @@
+class Solution {
+    public boolean isPathPresent(List<List<Integer>> adjList, boolean[] vis, int src, int dest){
+        vis[src] = true;
+        if(src == dest){
+            return true;
+        }
+        for(int nbr : adjList.get(src)){
+            if(!vis[nbr]){
+                if(isPathPresent(adjList,vis,nbr,dest)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public List<Boolean> checkIfPrerequisite(int numCourses, int[][] prerequisites, int[][] queries) {
+        List<List<Integer>> adjList = new ArrayList<>();
+        for(int i=0;i<numCourses;i++){
+            adjList.add(new ArrayList<>());
+        }
+        for(int arr[] : prerequisites){
+            int first = arr[0];
+            int second = arr[1];
+            adjList.get(first).add(second);
+        }
+        List<Boolean> result = new ArrayList<>();
+        for(int i=0;i<queries.length;i++){
+            boolean[] vis = new boolean[numCourses];
+            int src = queries[i][0];
+            int dest = queries[i][1];
+            result.add(isPathPresent(adjList,vis,src,dest));
+        }
+        return result;
+    }
+}
