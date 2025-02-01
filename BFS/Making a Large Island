@@ -1,0 +1,63 @@
+class Solution {
+    public int checkIsland(int[][] grid, int currId, int row, int col){
+        if(row < 0 || row >= grid.length || col < 0 || col >= grid[0].length || grid[row][col] != 1){
+            return 0;
+        }
+        grid[row][col] = currId;
+
+        return (1+checkIsland(grid,currId,row+1,col)+checkIsland(grid,currId,row-1,col)+checkIsland(grid,currId,row,col+1)+checkIsland(grid,currId,row,col-1));
+    }
+    public int largestIsland(int[][] grid) {
+        int m = grid.length;
+        int n = grid[0].length;
+        Map<Integer,Integer> map = new HashMap<>();
+        int currId = 2;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j] == 1){
+                    map.put(currId,checkIsland(grid,currId,i,j));
+                    currId++;
+                }
+            }
+        }
+        if(map.isEmpty()){
+            return 1;
+        }
+        if(map.size() == 1){
+            --currId;
+            return (map.get(currId) == m*n) ? map.get(currId) : map.get(currId)+1;
+        }
+        int maxi = 1;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j] == 0){
+                    int tempMax = 1;
+                    Set<Integer> set = new HashSet<>();
+                    // Checking Down
+                    if(i+1 < m && grid[i+1][j] > 1){
+                        set.add(grid[i+1][j]);
+                    }
+                    // Checking Up
+                    if(i-1 >= 0 && grid[i-1][j] > 1){
+                        set.add(grid[i-1][j]);
+                    }
+                    // Checking Right
+                    if(j+1 < n && grid[i][j+1] > 1){
+                        set.add(grid[i][j+1]);
+                    }
+                    // Checking Left
+                    if(j-1 >= 0 && grid[i][j-1] > 1){
+                        set.add(grid[i][j-1]);
+                    }
+
+                    for(int id : set){
+                        tempMax += map.get(id);
+                    }
+
+                    maxi = Math.max(maxi,tempMax);
+                }
+            }
+        }
+        return maxi;
+    }
+}
